@@ -1,20 +1,17 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowDown, ArrowRight, ArrowUpRight, Check, MessageCircle, PackageCheck, Sparkles, Store, Upload } from "lucide-react";
 import { Brand } from "@/components/brand";
 import { LeadMagnetForm } from "@/components/lead-magnet-form";
 
 const publicOrigin = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "");
-const socialImage = "https://files.manuscdn.com/user_upload_by_module/session_file/310519664035158170/IXThZmoQZxSneXGP.png";
-const editorialImage = "/manus-storage/async-images/fBS4PeXdCmc974147x9ElO/image-2.webp";
 
 export const metadata: Metadata = {
   title: "Your Instagram-inspired shop, live in 10 minutes",
   description: "Turn the products your followers already love into a polished, shareable storefront. Get the free 10-minute shop launch kit.",
   alternates: publicOrigin ? { canonical: `${publicOrigin}/` } : undefined,
-  openGraph: { title: "Your Instagram-inspired shop, live in 10 minutes", description: "A polished product catalogue and one easy link to share wherever customers find you.", type: "website", url: publicOrigin ? `${publicOrigin}/` : undefined, siteName: "Snap Shop", images: [{ url: socialImage, width: 1200, height: 630, alt: "Snap Shop — your Instagram-inspired shop, live in 10 minutes" }] },
-  twitter: { card: "summary_large_image", title: "Your Instagram-inspired shop, live in 10 minutes", description: "A polished product catalogue and one easy link to share wherever customers find you.", images: [socialImage] },
+  openGraph: { title: "Your Instagram-inspired shop, live in 10 minutes", description: "A polished product catalogue and one easy link to share wherever customers find you.", type: "website", url: publicOrigin ? `${publicOrigin}/` : undefined, siteName: "Snap Shop" },
+  twitter: { card: "summary_large_image", title: "Your Instagram-inspired shop, live in 10 minutes", description: "A polished product catalogue and one easy link to share wherever customers find you." },
 };
 
 const steps = [
@@ -28,7 +25,6 @@ function HeroVisual() {
     <div className="relative mx-auto w-full max-w-[520px]">
       <div className="absolute -inset-3 rotate-[-3deg] rounded-[2rem] bg-[#f0e6d7] sm:-inset-5" />
       <div className="relative aspect-[.93] overflow-hidden rounded-[1.8rem] border border-white/60 bg-[#d5c0a7] shadow-float sm:aspect-[1.06] sm:rounded-[2rem]">
-        <Image src={editorialImage} alt="A warm, sunlit collection of handmade ceramic, linen, and home goods" fill priority unoptimized sizes="(max-width: 768px) 92vw, 520px" className="object-cover" />
         <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-[#1f2923]/85 via-[#1f2923]/5 to-[#1f2923]/0" />
         <div className="absolute left-4 top-4 flex items-center gap-2 rounded-full border border-white/70 bg-white/90 px-3 py-2 text-[11px] font-bold text-ink shadow-card sm:left-5 sm:top-5"><span className="size-2 rounded-full bg-[#63876a]" /> A shop that feels like yours</div>
         <div className="absolute inset-x-4 bottom-4 sm:inset-x-6 sm:bottom-6">

@@ -1,3 +1,5 @@
+[← Back to README](../README.md)
+
 # Snap Shop — Phase 1 Outcomes
 
 - [ ] **Foundation, roles, and secure Supabase data model.** Create the Next.js 14+ / TypeScript / Tailwind project; provide `.env.example` with empty values for every specified environment variable; add versioned migrations for `profiles`, `stores`, `products`, and `imports`; define enums, checks, indexes, cascade behavior and timestamps. Enable RLS on every table. Owners may only access their own store and its products/imports; operators have full access; anonymous/non-owner visitors can select only published stores/products. The `owner_id`, `status`, and `is_operator` fields cannot be changed through an API bypass. Include a SQL/Postgres test confirming a non-owner cannot read another store’s draft or products.

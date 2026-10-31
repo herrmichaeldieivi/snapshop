@@ -1,3 +1,5 @@
+[← Back to README](../README.md)
+
 # Setup guide
 
 ## 1. Create a Supabase project

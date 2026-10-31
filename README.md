@@ -1,101 +1,171 @@
+<div align="center">
+
+<img src="docs/mark.svg" width="88" alt="Snap Shop" />
+
 # Snap Shop
 
-Turn a product list (CSV) or an Instagram handle into a mobile-ready storefront with a shareable link. Customers order by WhatsApp, email or Instagram DM. There is no cart or payment processing.
+**Turn a product list or an Instagram handle into a mobile-ready storefront with one shareable link.**
+Customers browse, then message you to order. No cart. No payment processor.
 
-Built with **Next.js 14 (App Router)**, **TypeScript**, **Tailwind CSS** and **Supabase** (Postgres, Auth, Storage).
+[![Next.js](https://img.shields.io/badge/Next.js-14-000000?logo=nextdotjs&logoColor=white)](https://nextjs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![Supabase](https://img.shields.io/badge/Supabase-Postgres%20%2B%20Auth-3FCF8E?logo=supabase&logoColor=white)](https://supabase.com)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-3-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
+[![Tests](https://img.shields.io/badge/tests-92%20passing-2E7D32)](#️-development)
+[![License: MIT](https://img.shields.io/badge/license-MIT-B84A35)](LICENSE)
 
-> Status: working prototype. Typecheck, lint, production build and 92 unit/integration tests pass. See [Known limitations](#known-limitations).
+[Quick start](#-quick-start) · [Features](#-features) · [Connect Supabase](docs/SETUP.md) · [How it works](#-how-it-works) · [Roadmap](docs/ROADMAP.md)
 
-## Features
+<br />
 
-- **Storefronts**: SSR public pages at `/s/<slug>` and product pages at `/s/<slug>/p/<id>`, with search, category chips and an in-stock filter. Includes SEO metadata, JSON-LD, sitemap and robots.
-- **Order by message**: a prefilled message goes out by WhatsApp first, then email, then Instagram.
-- **Admin** (`/admin`): store settings, product editor (up to 5 images, ordering, bulk actions), publish/unpublish. Operators see all stores and owners see only their own.
-- **CSV import**: upload, validate, preview, then commit in one atomic transaction. Re-importing updates products instead of duplicating them. Export round-trips.
-- **Secure image pipeline**: server-side fetch with SSRF protection, EXIF stripping, resize to 1200px, WebP conversion.
-- **Instagram and Facebook sync** (optional): import posts as draft products, post products to a Facebook Page or Instagram, and a Meta catalog feed at `/feeds/<slug>/meta.csv`. Tokens are AES-256-GCM encrypted.
-- **Lead capture** on the landing page with a honeypot, rate limit and insert-only RLS.
-- **Demo mode**: runs with no backend, using sample data.
+<img src="docs/screenshots/landing.png" alt="Snap Shop landing page" width="900" />
 
-## Quick start (demo mode, no Supabase needed)
+</div>
+
+<br />
+
+## ✨ Features
+
+| | |
+| --- | --- |
+| 🛍️ **Storefronts** | Server-rendered pages at `/s/<slug>` with search, category chips and an in-stock filter. Product pages have image galleries, SEO metadata, JSON-LD, a sitemap and robots rules. |
+| 💬 **Order by message** | A prefilled message opens WhatsApp first, then email, then Instagram. Out-of-stock items become "Ask about restock". |
+| 🧰 **Admin workspace** | Store settings, a product editor (5 images, drag or keyboard ordering, bulk actions) and publish or unpublish. Operators see every store; owners see only their own. |
+| 📥 **CSV import and export** | Upload, validate, preview, then commit in one atomic transaction. Re-importing updates by SKU or title instead of duplicating. Exports round-trip. |
+| 🖼️ **Secure image pipeline** | Server-side fetch with SSRF blocking, EXIF stripping, resize to 1200px and WebP conversion. |
+| 📸 **Instagram and Facebook sync** | Import IG posts as draft products, post products to a Page or Instagram, and publish a Meta catalog feed. Tokens are AES-256-GCM encrypted. *(Optional)* |
+| 🔐 **Locked down by default** | Row-level security on every table, origin and CSRF checks, rate limits, a honeypot lead form, and no service-role key in client code. |
+| 🧪 **Demo mode** | Runs with no backend at all, using sample data. |
+
+<table>
+  <tr>
+    <td width="62%"><img src="docs/screenshots/storefront.png" alt="Public storefront" /></td>
+    <td width="38%"><img src="docs/screenshots/storefront-mobile.png" alt="Storefront on mobile" /></td>
+  </tr>
+  <tr>
+    <td align="center"><sub>Public storefront (desktop)</sub></td>
+    <td align="center"><sub>Mobile</sub></td>
+  </tr>
+</table>
+
+<img src="docs/screenshots/admin.png" alt="Admin workspace" width="100%" />
+<p align="center"><sub>Admin workspace with a guided first-run path</sub></p>
+
+## 🚀 Quick start
+
+Needs **Node 20+** and **pnpm 10** (`corepack enable`).
 
 ```bash
+git clone https://github.com/herrmichaeldieivi/Snapshop.git
+cd Snapshop
 pnpm install
 pnpm dev
 ```
 
-Open <http://localhost:3000>. Demo mode turns on automatically when the Supabase env vars are empty.
+Open <http://localhost:3000>. With no Supabase variables set, the app starts in **demo mode**.
 
-| Route | What it is |
+| Route | What you get |
 | --- | --- |
 | `/` | Landing page |
 | `/10-minute-shop` | Setup guide |
-| `/demo` | Sample storefront |
-| `/admin` | Explorable admin with temporary sample data (resets on restart) |
+| `/demo` | Sample storefront (never sends a real order) |
+| `/admin` | Admin with temporary sample data that resets on restart |
 
-Requires Node 20+ and pnpm 10 (`corepack enable`).
+## 🔌 Connect Supabase
 
-## Connect Supabase
+> Full walkthrough with troubleshooting: **[docs/SETUP.md](docs/SETUP.md)**
 
-Full walkthrough: **[docs/SETUP.md](docs/SETUP.md)**. In short:
+1. Create a [Supabase](https://supabase.com) project.
+2. Apply the migrations in `supabase/migrations/` in order (`supabase db push`, or paste them into the SQL editor).
+3. `cp .env.example .env.local` and fill in the URL, anon key and service-role key.
+4. Allow `<your-site>/auth/callback` under Auth, then URL Configuration, then Redirect URLs.
+5. Sign in once, then promote yourself to operator:
 
-1. Create a Supabase project.
-2. Apply the migrations in `supabase/migrations/` in order.
-3. Copy `.env.example` to `.env.local` and fill in the URL, anon key and service-role key.
-4. Sign in once, then set your row in `profiles` to `is_operator = true`.
-
-## Environment variables
-
-| Variable | Required | Purpose |
-| --- | --- | --- |
-| `NEXT_PUBLIC_SUPABASE_URL` | for real backend | Project URL |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | for real backend | Public anon key |
-| `SUPABASE_SERVICE_ROLE_KEY` | for images and sync | **Server only. Never expose to the client.** |
-| `NEXT_PUBLIC_SITE_URL` | production | Public `https://` origin for canonical URLs, sitemap, and Meta image fetches |
-| `TOKEN_ENCRYPTION_KEY` | for Meta sync | `openssl rand -base64 32` |
-| `META_APP_ID`, `META_APP_SECRET` | for real Meta sync | Without them the Sync tab runs in preview mode |
-| `META_GRAPH_VERSION`, `META_LOGIN_CONFIG_ID`, `META_SCOPES` | optional | Meta tuning |
-| `META_MOCK` | optional | Force preview mode |
-| `RESEND_API_KEY`, `SENTRY_DSN`, `RATE_LIMIT_STORE` | optional | Reserved, not required to run |
-
-## Scripts
-
-```bash
-pnpm dev      # dev server
-pnpm check    # typecheck
-pnpm lint     # eslint
-pnpm test     # vitest
-pnpm build    # production build
+```sql
+update public.profiles set is_operator = true
+where id = (select id from auth.users where email = 'you@example.com');
 ```
 
-Database RLS tests live in `supabase/tests/` (pgTAP, run with `supabase test db`).
+### Environment variables
 
-## Project layout
+| Variable | Needed for | Notes |
+| --- | --- | --- |
+| `NEXT_PUBLIC_SUPABASE_URL` | Real backend | Project URL |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Real backend | Public anon key |
+| `SUPABASE_SERVICE_ROLE_KEY` | Images and sync | **Server only. Never expose.** |
+| `NEXT_PUBLIC_SITE_URL` | Production | Public `https://` origin for canonical URLs, sitemap and Meta image fetches |
+| `TOKEN_ENCRYPTION_KEY` | Meta sync | `openssl rand -base64 32` |
+| `META_APP_ID`, `META_APP_SECRET` | Live Meta sync | Without them the Sync tab runs in preview mode |
+| `META_GRAPH_VERSION`, `META_LOGIN_CONFIG_ID`, `META_SCOPES`, `META_MOCK` | Optional | Meta tuning |
+| `RESEND_API_KEY`, `SENTRY_DSN`, `RATE_LIMIT_STORE` | Optional | Reserved |
+
+## 🧭 How it works
+
+```mermaid
+flowchart LR
+  A[CSV upload] --> V[Validate and preview]
+  B[Instagram handle] --> S[Sync: import posts as drafts]
+  V --> C[(Supabase Postgres)]
+  S --> C
+  C --> P[Public storefront /s/slug]
+  P --> O{Customer taps Order}
+  O --> W[WhatsApp]
+  O --> E[Email]
+  O --> I[Instagram DM]
+  C --> F[Meta catalog feed]
+```
+
+**Data layer.** One typed repository interface has two implementations: Supabase, and an in-memory demo. The app picks one at startup, so the same UI runs both ways. Details are in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+
+**Security model**
+
+- Anonymous visitors can only read *published* stores and their products.
+- Owners can read and write only their own store. Operators can access all stores.
+- Ownership, status and `is_operator` can't be changed through the API.
+- Image URLs are fetched server-side only, blocking localhost, private ranges, link-local and metadata IPs.
+- Meta tokens live in tables with no client access.
+
+## 🗂️ Project layout
 
 ```text
-app/                  Routes: public storefront, admin, API route handlers
+app/                  Routes: public storefront, admin, API handlers
 components/           UI and admin forms
 src/lib/              Validation, CSV, image pipeline, security, social sync
-src/lib/repository/   Supabase and demo-mode data layers behind one interface
+src/lib/repository/   Supabase and demo data layers behind one interface
 supabase/migrations/  Schema, RLS, storage buckets, RPCs
-supabase/tests/       pgTAP RLS tests
+supabase/tests/       pgTAP row-level-security tests
 docs/                 Setup, architecture, roadmap
 __tests__/            Vitest suites
 ```
 
-## Deploy
+## 🛠️ Development
 
-Works on Vercel or any Node host. A `Dockerfile` is included (`docker build -t snap-shop . && docker run -p 3000:3000 --env-file .env.local snap-shop`). Set the env vars above, set `NEXT_PUBLIC_SITE_URL`, and add `<site>/auth/callback` to Supabase Auth redirect URLs.
+```bash
+pnpm dev           # dev server
+pnpm check         # typecheck
+pnpm lint          # eslint
+pnpm test          # 92 tests: CSV, slugs, order links, SSRF, RLS rules, Meta sync
+pnpm build         # production build
+supabase test db   # pgTAP RLS tests (needs the Supabase CLI)
+```
 
-## Known limitations
+## ☁️ Deploy
 
-- Landing page images reference assets that are not in this repo (`/manus-storage/...` and external CDN URLs in `components/brand.tsx`, `app/page.tsx`, `app.config.ts`). Replace them with your own images in `public/`.
+Works on Vercel or any Node host. Set the env vars above, set `NEXT_PUBLIC_SITE_URL` to your real https origin, and add `/auth/callback` to Supabase redirect URLs.
+
+```bash
+docker build -t snapshop .
+docker run -p 3000:3000 --env-file .env.local snapshop
+```
+
+## ⚠️ Known limitations
+
 - Store creation is operator-only. There is no self-serve signup yet.
-- Instagram posting is untested against live Meta and needs a Meta app plus App Review for accounts outside the app's roles.
+- Instagram posting is untested against live Meta. Accounts outside your app's roles need Meta App Review and Business Verification.
 - Privacy and Terms pages are placeholders. Replace them before accepting real customers.
 
-More in [docs/ROADMAP.md](docs/ROADMAP.md) and [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+See the [roadmap](docs/ROADMAP.md) for what's next.
 
-## License
+## 📄 License
 
-[MIT](LICENSE)
+[MIT](LICENSE) © 2026 Muafaq Belaly
