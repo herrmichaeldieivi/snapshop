@@ -1,0 +1,3 @@
+import Link from "next/link";
+export const metadata = { title: "Not found", robots: { index: false, follow: false } };
+export default function NotFound() { return <main className="shell grid min-h-screen place-items-center py-16 text-center"><div><p className="font-mono text-xs font-bold uppercase tracking-[0.16em] text-brand">404</p><h1 className="mt-3 text-5xl font-black tracking-[-0.07em]">Nothing to browse here.</h1><p className="mx-auto mt-5 max-w-md text-neutral-600">This store or product is not public, or the link may have changed.</p><Link className="button-primary mt-8" href="/">Back to Snap Shop</Link></div></main>; }
