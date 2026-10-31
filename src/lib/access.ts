@@ -33,3 +33,10 @@ export async function authorizeStore(storeId: string): Promise<{ identity: Admin
   if (!store || (!identity.isOperator && store.owner_id !== identity.id)) throw new AccessError("Store not found.", 404);
   return { identity, store };
 }
+
+/** Self-serve signup: an owner may create their own shop, up to this many. Operators are unlimited. */
+export const MAX_STORES_PER_OWNER = 1;
+
+export function canCreateStore(identity: AdminIdentity, ownedStoreCount: number) {
+  return identity.isOperator || ownedStoreCount < MAX_STORES_PER_OWNER;
+}

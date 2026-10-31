@@ -21,6 +21,7 @@ or paste each file into the SQL editor:
 1. `supabase/migrations/202610200001_phase1_schema.sql`: profiles, stores, products, imports, RLS, storage buckets (`product-images`, `store-logos`), `commit_catalog_import()`.
 2. `supabase/migrations/202610210001_lead_magnet_signups.sql`: email opt-in table (insert-only for the public).
 3. `supabase/migrations/202610230001_social_sync.sql`: Meta connection and sync tables (no client access).
+4. `supabase/migrations/202610310001_self_serve_stores.sql`: lets any signed-in user create one shop of their own (a trigger enforces the limit).
 
 Optional: run the RLS tests with `supabase test db`.
 

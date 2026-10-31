@@ -43,5 +43,5 @@ callbacks, and a preview mode with sample posts.
 - [ ] Apply `202610230001_social_sync.sql` and run `supabase test db` (`social_sync_rls.sql`).
 - [ ] Create the Meta app, set env vars, and do one real connect → import → post-to-Page → post-to-IG round trip with a tester account.
 - [ ] Meta App Review + Business Verification before connecting accounts that aren't on the app.
-- [ ] Self-serve signup (store creation is still operator-only).
+- [x] Self-serve signup (one shop per user; multi-shop and Start from Instagram stay operator-only).
 - [ ] Optional: scheduled sync / webhooks, editing captions before posting, product tags on IG posts.

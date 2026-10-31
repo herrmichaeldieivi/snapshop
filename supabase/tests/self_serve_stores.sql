@@ -1,0 +1,10 @@
+begin;
+select plan(3);
+insert into auth.users (id, email) values ('00000000-0000-0000-0000-0000000000a1', 'a@example.com'), ('00000000-0000-0000-0000-0000000000b1', 'b@example.com');
+set local role authenticated;
+set local request.jwt.claims = '{"sub":"00000000-0000-0000-0000-0000000000a1"}';
+select lives_ok($$insert into public.stores (owner_id, slug, name) values ('00000000-0000-0000-0000-0000000000a1', 'first-shop', 'First')$$, 'a user can create their first shop');
+select throws_ok($$insert into public.stores (owner_id, slug, name) values ('00000000-0000-0000-0000-0000000000a1', 'second-shop', 'Second')$$, 'P0001', 'You already have a shop', 'a second shop is refused');
+select throws_ok($$insert into public.stores (owner_id, slug, name) values ('00000000-0000-0000-0000-0000000000b1', 'for-b', 'For B')$$, null, null, 'cannot create a shop for someone else');
+select * from finish();
+rollback;

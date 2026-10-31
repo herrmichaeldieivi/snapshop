@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { getRepository } from "@/src/lib/repository";
-import { requireIdentity, requireStoreAccess } from "@/src/lib/access";
+import { canCreateStore, requireIdentity, requireStoreAccess } from "@/src/lib/access";
 import { validateSlug } from "@/src/lib/slug";
 import { formValue, parseProductForm, parseStoreForm } from "@/src/lib/validation";
 import { assertTrustedServerAction } from "@/src/lib/request-security";
@@ -12,13 +12,13 @@ import type { StoreInput } from "@/src/lib/repository";
 export async function createStoreAction(formData: FormData) {
   assertTrustedServerAction();
   const identity = await requireIdentity();
-  if (!identity.isOperator) throw new Error("Only an operator can create a store.");
+  const repository = getRepository();
+  if (!canCreateStore(identity, (await repository.listStores(identity)).length)) throw new Error("You already have a shop. Open it from your dashboard.");
   const name = formValue(formData, "name").trim();
   const slug = formValue(formData, "slug").trim().toLowerCase();
   if (!name || name.length > 80) throw new Error("Store name is required and must be 80 characters or fewer.");
   const slugError = validateSlug(slug);
   if (slugError) throw new Error(slugError);
-  const repository = getRepository();
   if (await repository.getStoreBySlug(slug)) throw new Error("That slug is already in use. Choose another one.");
   const store = await repository.createStore({ name, slug }, identity.id);
   revalidatePath("/admin");

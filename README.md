@@ -11,7 +11,7 @@ Customers browse, then message you to order. No cart. No payment processor.
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
 [![Supabase](https://img.shields.io/badge/Supabase-Postgres%20%2B%20Auth-3FCF8E?logo=supabase&logoColor=white)](https://supabase.com)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-3-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
-[![Tests](https://img.shields.io/badge/tests-92%20passing-2E7D32)](#️-development)
+[![Tests](https://img.shields.io/badge/tests-95%20passing-2E7D32)](#️-development)
 [![License: MIT](https://img.shields.io/badge/license-MIT-B84A35)](LICENSE)
 
 [Quick start](#-quick-start) · [Features](#-features) · [Connect Supabase](docs/SETUP.md) · [How it works](#-how-it-works) · [Roadmap](docs/ROADMAP.md)
@@ -30,6 +30,7 @@ Customers browse, then message you to order. No cart. No payment processor.
 | --- | --- |
 | 🛍️ **Storefronts** | Server-rendered pages at `/s/<slug>` with search, category chips and an in-stock filter. Product pages have image galleries, SEO metadata, JSON-LD, a sitemap and robots rules. |
 | 💬 **Order by message** | A prefilled message opens WhatsApp first, then email, then Instagram. Out-of-stock items become "Ask about restock". |
+| 🙋 **Self-serve signup** | Anyone can sign in with a magic link and create their own shop. No operator needed. One shop per user, enforced in the database. |
 | 🧰 **Admin workspace** | Store settings, a product editor (5 images, drag or keyboard ordering, bulk actions) and publish or unpublish. Operators see every store; owners see only their own. |
 | 📥 **CSV import and export** | Upload, validate, preview, then commit in one atomic transaction. Re-importing updates by SKU or title instead of duplicating. Exports round-trip. |
 | 🖼️ **Secure image pipeline** | Server-side fetch with SSRF blocking, EXIF stripping, resize to 1200px and WebP conversion. |
@@ -144,7 +145,7 @@ __tests__/            Vitest suites
 pnpm dev           # dev server
 pnpm check         # typecheck
 pnpm lint          # eslint
-pnpm test          # 92 tests: CSV, slugs, order links, SSRF, RLS rules, Meta sync
+pnpm test          # 95 tests: CSV, slugs, order links, SSRF, RLS rules, Meta sync
 pnpm build         # production build
 supabase test db   # pgTAP RLS tests (needs the Supabase CLI)
 ```
@@ -160,7 +161,7 @@ docker run -p 3000:3000 --env-file .env.local snapshop
 
 ## ⚠️ Known limitations
 
-- Store creation is operator-only. There is no self-serve signup yet.
+- Self-serve signup creates one shop per user. Multiple shops per account are operator-only. "Start from Instagram" is also operator-only.
 - Instagram posting is untested against live Meta. Accounts outside your app's roles need Meta App Review and Business Verification.
 - Privacy and Terms pages are placeholders. Replace them before accepting real customers.
 
